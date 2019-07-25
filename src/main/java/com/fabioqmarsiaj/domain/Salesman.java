@@ -1,6 +1,6 @@
 package com.fabioqmarsiaj.domain;
 
-public class Salesman {
+public class Salesman{
 
     private String cpf;
     private String name;

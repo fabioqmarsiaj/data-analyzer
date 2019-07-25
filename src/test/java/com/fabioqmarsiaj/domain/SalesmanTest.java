@@ -13,6 +13,9 @@ public class SalesmanTest {
         Salesman salesman = new Salesman("02983423085", "Fabio", 2500.0);
 
         assertNotNull(salesman);
+        assertEquals("02983423085", salesman.getCpf());
+        assertEquals("Fabio", salesman.getName());
+        assertEquals(new Double(2500.0), salesman.getSalary());
 
     }
 }
