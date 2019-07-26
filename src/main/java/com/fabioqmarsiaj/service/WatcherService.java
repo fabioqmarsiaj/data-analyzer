@@ -9,14 +9,19 @@ public class WatcherService {
 
         String homepath = System.getProperty("user.home");
 
+        DataOutService dataOutService = new DataOutService();
+
         DataInService dataInService = DataInService.getSingleton();
         dataInService.readFile();
+
         System.out.println(dataInService.getDataList());
 
         AnalysisService analysisService = new AnalysisService();
         analysisService.salesmanQuantityAnalyzer(dataInService.getDataList());
         analysisService.customerQuantityAnalyzer(dataInService.getDataList());
-        analysisService.worseSalesmanAnalyzer(dataInService.getDataList());
+        String worse = analysisService.worseSalesmanAnalyzer(dataInService.getDataList());
+
+        dataOutService.writeOutFile(dataInService.getSalesmanQuantity(), dataInService.getCustomerQuantity(), worse);
 
         System.out.println(dataInService.getSalesmanQuantity());
         System.out.println(dataInService.getCustomerQuantity());
@@ -41,7 +46,9 @@ public class WatcherService {
                 analysisService.salesmanQuantityAnalyzer(dataInService.getDataList());
                 analysisService.customerQuantityAnalyzer(dataInService.getDataList());
                 System.out.println(analysisService.worseSalesmanAnalyzer(dataInService.getDataList()));
+
             }
+            dataOutService.writeOutFile(dataInService.getSalesmanQuantity(), dataInService.getCustomerQuantity(), worse);
             key.reset();
             System.out.println(dataInService.getDataList());
             System.out.println(dataInService.getSalesmanQuantity());
