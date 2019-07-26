@@ -5,25 +5,26 @@ import java.nio.file.*;
 
 public class WatcherService {
 
-
     public void fileWatcher() throws IOException, InterruptedException {
 
-        ReaderService readerService = new ReaderService();
-        readerService.readFile();
-        System.out.println(readerService.getDataList());
+        String homepath = System.getProperty("user.home");
+
+        DataInService dataInService = DataInService.getSingleton();
+        dataInService.readFile();
+        System.out.println(dataInService.getDataList());
 
         AnalysisService analysisService = new AnalysisService();
-        analysisService.salesmanQuantityAnalyzer(readerService.getDataList());
-        analysisService.customerQuantityAnalyzer(readerService.getDataList());
-        analysisService.worseSalesmanAnalyzer(readerService.getDataList());
+        analysisService.salesmanQuantityAnalyzer(dataInService.getDataList());
+        analysisService.customerQuantityAnalyzer(dataInService.getDataList());
+        analysisService.worseSalesmanAnalyzer(dataInService.getDataList());
 
-        System.out.println(analysisService.getSalesmanQuantity());
-        System.out.println(analysisService.getCustomerQuantity());
+        System.out.println(dataInService.getSalesmanQuantity());
+        System.out.println(dataInService.getCustomerQuantity());
 
         WatchService watchService
                 = FileSystems.getDefault().newWatchService();
 
-        Path path = Paths.get("/home/ilegra0282/data/in");
+        Path path = Paths.get(homepath + "/data/in");
 
         path.register(
                 watchService,
@@ -35,18 +36,16 @@ public class WatcherService {
 
         while ((key = watchService.take()) != null) {
             for (WatchEvent<?> event : key.pollEvents()) {
-                System.out.println(
-                        "Event kind:" + event.kind()
-                                + ". File affected: " + event.context() + ".");
-                readerService.readFile();
-                analysisService.salesmanQuantityAnalyzer(readerService.getDataList());
-                analysisService.customerQuantityAnalyzer(readerService.getDataList());
-                analysisService.worseSalesmanAnalyzer(readerService.getDataList());
+                System.out.println("Event kind:" + event.kind() + ". File affected: " + event.context() + ".");
+                dataInService.readFile();
+                analysisService.salesmanQuantityAnalyzer(dataInService.getDataList());
+                analysisService.customerQuantityAnalyzer(dataInService.getDataList());
+                System.out.println(analysisService.worseSalesmanAnalyzer(dataInService.getDataList()));
             }
             key.reset();
-            System.out.println(readerService.getDataList());
-            System.out.println(analysisService.getSalesmanQuantity());
-            System.out.println(analysisService.getCustomerQuantity());
+            System.out.println(dataInService.getDataList());
+            System.out.println(dataInService.getSalesmanQuantity());
+            System.out.println(dataInService.getCustomerQuantity());
 
         }
     }
