@@ -10,21 +10,7 @@ public class WatcherService {
         String homepath = System.getProperty("user.home");
 
         DataOutService dataOutService = new DataOutService();
-
-        DataInService dataInService = DataInService.getSingleton();
-        dataInService.readFile();
-
-        System.out.println(dataInService.getDataList());
-
-        AnalysisService analysisService = new AnalysisService();
-        analysisService.salesmanQuantityAnalyzer(dataInService.getDataList());
-        analysisService.customerQuantityAnalyzer(dataInService.getDataList());
-        String worse = analysisService.worseSalesmanAnalyzer(dataInService.getDataList());
-
-        dataOutService.writeOutFile(dataInService.getSalesmanQuantity(), dataInService.getCustomerQuantity(), worse);
-
-        System.out.println(dataInService.getSalesmanQuantity());
-        System.out.println(dataInService.getCustomerQuantity());
+        dataOutService.writeOutFile();
 
         WatchService watchService
                 = FileSystems.getDefault().newWatchService();
@@ -42,18 +28,9 @@ public class WatcherService {
         while ((key = watchService.take()) != null) {
             for (WatchEvent<?> event : key.pollEvents()) {
                 System.out.println("Event kind:" + event.kind() + ". File affected: " + event.context() + ".");
-                dataInService.readFile();
-                analysisService.salesmanQuantityAnalyzer(dataInService.getDataList());
-                analysisService.customerQuantityAnalyzer(dataInService.getDataList());
-                System.out.println(analysisService.worseSalesmanAnalyzer(dataInService.getDataList()));
-
             }
-            dataOutService.writeOutFile(dataInService.getSalesmanQuantity(), dataInService.getCustomerQuantity(), worse);
+            dataOutService.writeOutFile();
             key.reset();
-            System.out.println(dataInService.getDataList());
-            System.out.println(dataInService.getSalesmanQuantity());
-            System.out.println(dataInService.getCustomerQuantity());
-
         }
     }
 }
