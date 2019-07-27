@@ -1,5 +1,7 @@
 package com.fabioqmarsiaj.service;
 
+import com.fabioqmarsiaj.analyzers.SalesAnalyzer;
+import com.fabioqmarsiaj.analyzers.SalesmanAnalyzer;
 import com.fabioqmarsiaj.domain.Item;
 import com.fabioqmarsiaj.domain.Sale;
 import com.fabioqmarsiaj.domain.Salesman;
@@ -22,7 +24,7 @@ public class DataInService {
 
     private static class StaticHolder{ static final DataInService INSTANCE = new DataInService();}
 
-    static DataInService getSingleton(){ return StaticHolder.INSTANCE; }
+    public static DataInService getSingleton(){ return StaticHolder.INSTANCE; }
 
     public void readFile() {
         dataList.clear();
@@ -56,24 +58,24 @@ public class DataInService {
     public void readSalesFromFile(String line) {
         String delimiter = delimiterAnalyzer(line);
 
-        String[] split = line.split(delimiter);
-        String[] items = split[2].split(",");
+        String[] saleAttributes = line.split(delimiter);
+        String[] item = saleAttributes[2].split(",");
 
         List<Item> itemsList = new ArrayList<>();
-        for (String string : items) {
+        for (String itemAttribute : item) {
 
-            String[] item = string.split("-");
-            String itemId = item[0].replace("[", "");
+            String[] itemAttributes = itemAttribute.split("-");
+            String itemId = itemAttributes[0].replace("[", "");
             int itemIdToInt = Integer.parseInt(itemId);
-            int quantityToInt = Integer.parseInt(item[1]);
+            int quantityToInt = Integer.parseInt(itemAttributes[1]);
 
-            String price = item[2].replace("]", "");
+            String price = itemAttributes[2].replace("]", "");
             Double priceToDouble = Double.parseDouble(price);
 
             Item newItem = new Item(itemIdToInt, quantityToInt, priceToDouble);
             itemsList.add(newItem);
         }
-        Sale newSale = new Sale(Integer.parseInt(split[1]), itemsList, split[3]);
+        Sale newSale = new Sale(Integer.parseInt(saleAttributes[1]), itemsList, saleAttributes[3]);
         salesAnalyzer.getSales().add(newSale);
     }
 

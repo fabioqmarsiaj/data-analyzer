@@ -1,11 +1,20 @@
 package com.fabioqmarsiaj.service;
 
 import com.fabioqmarsiaj.DataRequirements;
+import com.fabioqmarsiaj.analyzers.CustomerAnalyzer;
+import com.fabioqmarsiaj.analyzers.SalesmanAnalyzer;
 
 import java.io.FileWriter;
 import java.io.IOException;
 
 public class DataOutService {
+
+    private DataOutService() {
+    }
+
+    private static class StaticHolder{ static final DataOutService INSTANCE = new DataOutService();}
+
+    static DataOutService getSingleton(){ return StaticHolder.INSTANCE; }
 
     public void writeOutFile() throws IOException {
         String homepath = System.getProperty("user.home");

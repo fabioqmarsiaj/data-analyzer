@@ -1,6 +1,4 @@
-package com.fabioqmarsiaj.service;
-
-import com.fabioqmarsiaj.Analyzer;
+package com.fabioqmarsiaj.analyzers;
 
 import java.util.Set;
 
@@ -16,7 +14,7 @@ public class CustomerAnalyzer implements Analyzer {
 
     private static class StaticHolder{ static final CustomerAnalyzer INSTANCE = new CustomerAnalyzer();}
 
-    static CustomerAnalyzer getSingleton(){ return StaticHolder.INSTANCE; }
+    public static CustomerAnalyzer getSingleton(){ return StaticHolder.INSTANCE; }
 
     @Override
     public void analyze(Set<String> data) {

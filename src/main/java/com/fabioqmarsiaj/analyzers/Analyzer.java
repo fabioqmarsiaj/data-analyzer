@@ -1,4 +1,4 @@
-package com.fabioqmarsiaj;
+package com.fabioqmarsiaj.analyzers;
 
 import java.util.Set;
 

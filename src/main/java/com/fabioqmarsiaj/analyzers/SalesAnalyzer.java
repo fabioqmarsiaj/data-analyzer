@@ -1,14 +1,14 @@
-package com.fabioqmarsiaj.service;
+package com.fabioqmarsiaj.analyzers;
 
 import com.fabioqmarsiaj.domain.Sale;
+import com.fabioqmarsiaj.service.DataInService;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 public class SalesAnalyzer {
 
-    private DataInService dataInService = DataInService.getSingleton();
-    private SalesmanAnalyzer salesmanAnalyzer = SalesmanAnalyzer.getSingleton();
     private List<Sale> sales = new ArrayList<>();
 
     public List<Sale> getSales() { return sales; }
@@ -18,11 +18,14 @@ public class SalesAnalyzer {
 
     private static class StaticHolder{ static final SalesAnalyzer INSTANCE = new SalesAnalyzer();}
 
-    static SalesAnalyzer getSingleton(){ return StaticHolder.INSTANCE; }
+    public static SalesAnalyzer getSingleton(){ return StaticHolder.INSTANCE; }
 
     public void addToSales(Set<String> data) {
+        SalesmanAnalyzer salesmanAnalyzer = SalesmanAnalyzer.getSingleton();
         salesmanAnalyzer.getSalesmens().clear();
         sales.clear();
+
+        DataInService dataInService = DataInService.getSingleton();
 
         for (String line : data) {
             String delimiter = delimiterAnalyzer(line);

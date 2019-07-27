@@ -9,7 +9,7 @@ public class WatcherService {
 
         String homepath = System.getProperty("user.home");
 
-        DataOutService dataOutService = new DataOutService();
+        DataOutService dataOutService = DataOutService.getSingleton();
         dataOutService.writeOutFile();
 
         WatchService watchService
