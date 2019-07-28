@@ -75,7 +75,7 @@ public class DataInService {
             Item newItem = new Item(itemIdToInt, quantityToInt, priceToDouble);
             itemsList.add(newItem);
         }
-        Sale newSale = new Sale(Integer.parseInt(saleAttributes[1]), itemsList, saleAttributes[3]);
+        Sale newSale = new Sale(saleAttributes[1], itemsList, saleAttributes[3]);
         salesAnalyzer.getSales().add(newSale);
     }
 

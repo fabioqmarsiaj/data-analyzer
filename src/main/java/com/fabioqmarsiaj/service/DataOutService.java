@@ -2,6 +2,7 @@ package com.fabioqmarsiaj.service;
 
 import com.fabioqmarsiaj.DataRequirements;
 import com.fabioqmarsiaj.analyzers.CustomerAnalyzer;
+import com.fabioqmarsiaj.analyzers.SalesAnalyzer;
 import com.fabioqmarsiaj.analyzers.SalesmanAnalyzer;
 
 import java.io.FileWriter;
@@ -28,10 +29,14 @@ public class DataOutService {
         CustomerAnalyzer customerAnalyzer = CustomerAnalyzer.getSingleton();
         customerAnalyzer.analyze(dataInService.getDataList());
 
+        SalesAnalyzer salesAnalyzer = SalesAnalyzer.getSingleton();
+        salesAnalyzer.analyze(dataInService.getDataList());
+
         try(FileWriter fileWriter = new FileWriter(homepath + "/data/out/data.done.dat")){
 
             fileWriter.write(DataRequirements.CUSTOMERS.toString() + ": " + customerAnalyzer.getCustomerQuantity() + "\n" +
                     DataRequirements.SALESMEN.toString() + ": " + salesmanAnalyzer.getSalesmanQuantity() + "\n" +
+                    DataRequirements.EXPANSIVE_SALE_ID + ": " + salesAnalyzer.getExpansiveSaleId() + "\n" +
                     DataRequirements.WORSE_SALESMAN.toString() + ": " + salesmanAnalyzer.getWorseSalesman());
         }
     }

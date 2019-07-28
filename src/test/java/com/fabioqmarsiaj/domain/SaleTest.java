@@ -23,10 +23,10 @@ public class SaleTest {
         items.add(item2);
         items.add(item3);
 
-        Sale sale = new Sale(1, items, salesman.getName());
+        Sale sale = new Sale("1", items, salesman.getName());
 
         assertNotNull(sale);
-        assertEquals(1, sale.getSaleId());
+        assertEquals("1", sale.getSaleId());
         assertEquals(3, sale.getItems().size());
         assertEquals("Fabio", sale.getSalesmanName());
     }

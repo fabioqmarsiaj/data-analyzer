@@ -2,8 +2,12 @@ plugins {
     id 'java'
 }
 
+apply plugin: 'application'
+
 group 'com.fabioqmarsiaj'
 version '1.0-SNAPSHOT'
+
+mainClassName = 'com.fabioqmarsiaj/Main'
 
 sourceCompatibility = 1.8
 

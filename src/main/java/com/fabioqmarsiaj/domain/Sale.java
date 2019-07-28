@@ -1,21 +1,20 @@
 package com.fabioqmarsiaj.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Sale implements Comparable<Sale>{
 
-    private int saleId;
+    private String saleId;
     private List<Item> items;
     private String salesmanName;
 
-    public Sale(int saleId, List<Item> items, String salesmanName) {
+    public Sale(String saleId, List<Item> items, String salesmanName) {
         this.saleId = saleId;
         this.items = items;
         this.salesmanName = salesmanName;
     }
 
-    public int getSaleId() {
+    public String getSaleId() {
         return saleId;
     }
 
