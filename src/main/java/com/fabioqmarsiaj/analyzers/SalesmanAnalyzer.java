@@ -1,10 +1,8 @@
 package com.fabioqmarsiaj.analyzers;
 
-import com.fabioqmarsiaj.domain.Item;
-import com.fabioqmarsiaj.domain.Sale;
+import com.fabioqmarsiaj.DataFileEmptyException;
 import com.fabioqmarsiaj.domain.Salesman;
 import com.fabioqmarsiaj.service.DataInService;
-
 import java.util.*;
 
 public class SalesmanAnalyzer implements Analyzer {
@@ -15,13 +13,11 @@ public class SalesmanAnalyzer implements Analyzer {
     private List<Salesman> salesmens = new ArrayList<>();
     private Map<Salesman, Double> salesmansSalesAmount = new HashMap<>();
 
-
     public void setSalesmanQuantity(String salesmanQuantity) { this.salesmanQuantity = salesmanQuantity; }
     public String getSalesmanQuantity() { return salesmanQuantity; }
     public void setWorseSalesman(String worseSalesman) { this.worseSalesman = worseSalesman; }
     public String getWorseSalesman() { return worseSalesman; }
     public List<Salesman> getSalesmens() { return salesmens; }
-    public Map<Salesman, Double> getSalesmansSalesAmount() { return salesmansSalesAmount; }
 
     private SalesmanAnalyzer() {
     }
@@ -32,9 +28,12 @@ public class SalesmanAnalyzer implements Analyzer {
 
     @Override
     public void analyze(Set<String> data) {
-        salesmanQuantity(data);
-
-        worseSalesman(data);
+        if(data.isEmpty()){
+            throw new DataFileEmptyException();
+        }else{
+            salesmanQuantity(data);
+            worseSalesman(data);
+        }
     }
 
     private void salesmanQuantity(Set<String> data) {
@@ -42,16 +41,15 @@ public class SalesmanAnalyzer implements Analyzer {
     }
 
     private void worseSalesman(Set<String> data) {
-
         addToSalesmanSalesAmount(data);
 
-        double worseSalesAmount = Collections.min(getSalesmansSalesAmount().values());
+        double worseSalesAmount = Collections.min(salesmansSalesAmount.values());
 
-        for(Map.Entry<Salesman, Double> entry : getSalesmansSalesAmount().entrySet()){
-            if(entry.getValue().equals(worseSalesAmount)){
-                setWorseSalesman(entry.getKey().getName());
+        salesmansSalesAmount.forEach((s, d) -> {
+            if(d.equals(worseSalesAmount)){
+                setWorseSalesman(s.getName());
             }
-        }
+        });
     }
 
     public void addToSalesmanSalesAmount(Set<String> data){
@@ -60,46 +58,35 @@ public class SalesmanAnalyzer implements Analyzer {
         salesAnalyzer.addToSales(data);
         addToSalesman(data);
 
-        for(Sale sale : salesAnalyzer.getSales()){
-            for(Salesman salesman : salesmens){
-                if(salesman.getName().equals(sale.getSalesmanName())){
-                    double amount = getAmountPerSalesman(salesman.getName());
-                    for(Item item : sale.getItems()){
-                        amount = amount + (item.getQuantity() * item.getPrice());
-                        salesmansSalesAmount.put(salesman,amount);
-                    }
-                }
+        salesAnalyzer.getSales().forEach(sale -> salesmens.forEach(salesman -> {
+            if(salesman.getName().equals(sale.getSalesmanName())){
+                double amount = getAmountPerSalesman(salesman.getName());
+                sale.getItems().forEach(item -> salesmansSalesAmount.put(salesman,amount));
             }
-        }
-        for(Map.Entry<Salesman, Double> entry : salesmansSalesAmount.entrySet()){
-            System.out.println(entry.getKey().getName() + " " + entry.getValue());
-        }
+        }));
     }
 
     public void addToSalesman(Set<String> data) {
         salesmens.clear();
 
         DataInService dataInService = DataInService.getSingleton();
-
         data.forEach(line -> {
-            String delimiter = delimiterAnalyzer(line);
-            if (line.contains("001" + delimiter)) {
+            dataInService.delimiterAnalyzer(line);
+            if (line.contains("001" + dataInService.getDelimiter())) {
                 dataInService.readSalesmanFromFile(line);
             }
         });
     }
 
     public double getAmountPerSalesman(String salesmanName){
-        double amount = 0.0;
-        for(Map.Entry<Salesman, Double> entry : salesmansSalesAmount.entrySet()){
-            if(entry.getKey().getName().equals(salesmanName)){
-                amount += entry.getValue();
-            }
-        }
-        return amount;
-    }
+        final double[] amount = {0.0};
 
-    private String delimiterAnalyzer(String line){
-        return line.substring(3, 4);
+        salesmansSalesAmount.forEach((salesman, amountPerSalesman) -> {
+            if(salesman.getName().equals(salesmanName)){
+                amount[0] += amountPerSalesman;
+            }
+        });
+
+        return amount[0];
     }
 }

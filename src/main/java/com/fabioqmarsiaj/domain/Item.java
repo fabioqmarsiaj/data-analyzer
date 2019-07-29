@@ -2,17 +2,17 @@ package com.fabioqmarsiaj.domain;
 
 public class Item {
 
-    private int id;
+    private String id;
     private int quantity;
     private Double price;
 
-    public Item(int id, int quantity, Double price) {
+    public Item(String id, int quantity, Double price) {
         this.id = id;
         this.quantity = quantity;
         this.price = price;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 

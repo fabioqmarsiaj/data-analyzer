@@ -5,49 +5,59 @@ import com.fabioqmarsiaj.analyzers.SalesmanAnalyzer;
 import com.fabioqmarsiaj.domain.Item;
 import com.fabioqmarsiaj.domain.Sale;
 import com.fabioqmarsiaj.domain.Salesman;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class DataInService {
-
     private Set<String> dataList = new TreeSet<>();
     private SalesmanAnalyzer salesmanAnalyzer = SalesmanAnalyzer.getSingleton();
     private SalesAnalyzer salesAnalyzer = SalesAnalyzer.getSingleton();
-
-    public Set<String> getDataList() { return dataList; }
-
+    private String delimiter;
+    private String homepath;
+    private boolean fileExists;
+    
     private DataInService() {
     }
 
     private static class StaticHolder{ static final DataInService INSTANCE = new DataInService();}
 
+    public Set<String> getDataList() { return dataList; }
+    public String getDelimiter() { return delimiter; }
+    public String getHomepath() { return homepath; }
+    public boolean isFileExists() { return fileExists; }
+
     public static DataInService getSingleton(){ return StaticHolder.INSTANCE; }
 
-    public void readFile() {
+    public void readFile() throws IOException {
         dataList.clear();
 
-        String homepath = System.getProperty("user.home");
+        homepath = System.getProperty("user.home");
         File dir = new File(homepath + "/data/in/");
+
+        createDirectoriesIfDoesntExist(dir);
+        inFileCreator(dir.toString());
 
         for (File file : Objects.requireNonNull(dir.listFiles())) {
             try(BufferedReader bufferedReader = new BufferedReader(
                     new FileReader(file.getAbsolutePath()))){
                 String line;
                 while((line = bufferedReader.readLine()) != null){
-                    verifyLineAndAdd(line);
+                    verifyLineAndAddToDataList(line);
                 }
+            } catch (FileNotFoundException e) {
+                throw new FileNotFoundException("File: " + file.getAbsolutePath() + " not found.");
             } catch (IOException e) {
-                e.printStackTrace();
+                e.getMessage();
             }
         }
     }
 
     public void readSalesmanFromFile(String line) {
-        String delimiter = delimiterAnalyzer(line);
-
         String[] split = line.split(delimiter);
 
         Salesman newSalesman = new Salesman(split[1], split[2], Double.parseDouble(split[3]));
@@ -56,31 +66,33 @@ public class DataInService {
     }
 
     public void readSalesFromFile(String line) {
-        String delimiter = delimiterAnalyzer(line);
+        delimiterAnalyzer(line);
 
-        String[] saleAttributes = line.split(delimiter);
-        String[] item = saleAttributes[2].split(",");
+        String allItemsOnSale = StringUtils.substringBetween(line, "[", "]");
+        String[] items = allItemsOnSale.split(",");
 
         List<Item> itemsList = new ArrayList<>();
-        for (String itemAttribute : item) {
 
-            String[] itemAttributes = itemAttribute.split("-");
-            String itemId = itemAttributes[0].replace("[", "");
-            int itemIdToInt = Integer.parseInt(itemId);
-            int quantityToInt = Integer.parseInt(itemAttributes[1]);
+        for (String item : items) {
+            String itemId = StringUtils.substringBefore(item, "-");
+            String itemQuantity = StringUtils.substringBetween(item, "-", "-");
+            String itemPrice = StringUtils.substringAfterLast(item, "-");
 
-            String price = itemAttributes[2].replace("]", "");
-            Double priceToDouble = Double.parseDouble(price);
-
-            Item newItem = new Item(itemIdToInt, quantityToInt, priceToDouble);
+            Item newItem = new Item(itemId, Integer.parseInt(itemQuantity), Double.parseDouble(itemPrice));
             itemsList.add(newItem);
         }
-        Sale newSale = new Sale(saleAttributes[1], itemsList, saleAttributes[3]);
+        String[] saleId = StringUtils.substringsBetween(line, delimiter, delimiter);
+        String salesmanName = StringUtils.substringAfterLast(line, delimiter);
+
+        Sale newSale = new Sale(saleId[0], itemsList, salesmanName);
         salesAnalyzer.getSales().add(newSale);
     }
 
-    private void verifyLineAndAdd(String line) {
+    public void delimiterAnalyzer(String line){
+        delimiter =  line.substring(3, 4);
+    }
 
+    private void verifyLineAndAddToDataList(String line) {
         if (line.contains(" ")) {
             dataList.add(line.replace(" ", ""));
         }else{
@@ -88,7 +100,23 @@ public class DataInService {
         }
     }
 
-    private String delimiterAnalyzer(String line){
-        return line.substring(3, 4);
+    private void createDirectoriesIfDoesntExist(File dir) throws IOException {
+        if(!dir.exists()){
+            createDirectories(homepath);
+        }
+    }
+
+    private void createDirectories(String homepath) throws IOException {
+        Path path = Paths.get(homepath + "/data");
+        Files.createDirectories(path);
+        Path pathToIn = Paths.get(homepath + "/data/in");
+        Path pathToOut = Paths.get(homepath + "/data/out");
+        Files.createDirectories(pathToIn);
+        Files.createDirectories(pathToOut);
+    }
+
+    private void inFileCreator(String dir) throws IOException {
+        File inFile = new File(dir + "/data.dat");
+        fileExists = inFile.createNewFile();
     }
 }

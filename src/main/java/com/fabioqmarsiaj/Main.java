@@ -1,7 +1,6 @@
 package com.fabioqmarsiaj;
 
 import com.fabioqmarsiaj.service.WatcherService;
-
 import java.io.IOException;
 
 public class Main {
@@ -11,7 +10,5 @@ public class Main {
         WatcherService watcherService = new WatcherService();
 
         watcherService.fileWatcher();
-
-
     }
 }

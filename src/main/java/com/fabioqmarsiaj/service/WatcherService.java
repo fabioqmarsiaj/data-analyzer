@@ -7,15 +7,14 @@ public class WatcherService {
 
     public void fileWatcher() throws IOException, InterruptedException {
 
-        String homepath = System.getProperty("user.home");
-
         DataOutService dataOutService = DataOutService.getSingleton();
         dataOutService.writeOutFile();
 
         WatchService watchService
                 = FileSystems.getDefault().newWatchService();
 
-        Path path = Paths.get(homepath + "/data/in");
+        DataInService dataInService = DataInService.getSingleton();
+        Path path = Paths.get(dataInService.getHomepath() + "/data/in");
 
         path.register(
                 watchService,

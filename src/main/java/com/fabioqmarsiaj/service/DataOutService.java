@@ -5,6 +5,7 @@ import com.fabioqmarsiaj.analyzers.CustomerAnalyzer;
 import com.fabioqmarsiaj.analyzers.SalesAnalyzer;
 import com.fabioqmarsiaj.analyzers.SalesmanAnalyzer;
 
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -18,22 +19,17 @@ public class DataOutService {
     static DataOutService getSingleton(){ return StaticHolder.INSTANCE; }
 
     public void writeOutFile() throws IOException {
-        String homepath = System.getProperty("user.home");
-
         DataInService dataInService = DataInService.getSingleton();
-        dataInService.readFile();
-
         SalesmanAnalyzer salesmanAnalyzer = SalesmanAnalyzer.getSingleton();
-        salesmanAnalyzer.analyze(dataInService.getDataList());
-
         CustomerAnalyzer customerAnalyzer = CustomerAnalyzer.getSingleton();
-        customerAnalyzer.analyze(dataInService.getDataList());
-
         SalesAnalyzer salesAnalyzer = SalesAnalyzer.getSingleton();
+
+        dataInService.readFile();
+        salesmanAnalyzer.analyze(dataInService.getDataList());
+        customerAnalyzer.analyze(dataInService.getDataList());
         salesAnalyzer.analyze(dataInService.getDataList());
 
-        try(FileWriter fileWriter = new FileWriter(homepath + "/data/out/data.done.dat")){
-
+        try(FileWriter fileWriter = new FileWriter(dataInService.getHomepath() + "/data/out/data.done.dat")){
             fileWriter.write(DataRequirements.CUSTOMERS.toString() + ": " + customerAnalyzer.getCustomerQuantity() + "\n" +
                     DataRequirements.SALESMEN.toString() + ": " + salesmanAnalyzer.getSalesmanQuantity() + "\n" +
                     DataRequirements.EXPANSIVE_SALE_ID + ": " + salesAnalyzer.getExpansiveSaleId() + "\n" +
