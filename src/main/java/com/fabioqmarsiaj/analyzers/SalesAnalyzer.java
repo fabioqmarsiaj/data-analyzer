@@ -6,21 +6,20 @@ import java.util.*;
 
 public class SalesAnalyzer implements Analyzer{
 
-    private List<Sale> sales = new ArrayList<>();
+    private Set<Sale> sales = new TreeSet<>();
     private Map<Sale, Double> totalItemsPricePerSale = new HashMap<>();
     private Double expansiveSalePrice;
     private String expansiveSaleId;
 
     public String getExpansiveSaleId() { return expansiveSaleId; }
     public void setExpansiveSaleId(String expansiveSaleId) { this.expansiveSaleId = expansiveSaleId; }
-    public List<Sale> getSales() { return sales; }
+    public Set<Sale> getSales() { return sales; }
 
     private SalesAnalyzer() {
     }
 
     @Override
     public void analyze(Set<String> data) {
-        addToSales(data);
         mostExpansiveSaleId();
     }
 
@@ -40,11 +39,12 @@ public class SalesAnalyzer implements Analyzer{
         sales.forEach(sale -> {
             double itemsPriceAmountOnSale = sale.getItems().stream().mapToDouble(item ->
                     (item.getPrice() * item.getQuantity())).sum();
-
             totalItemsPricePerSale.put(sale, itemsPriceAmountOnSale);
-
         });
+        getExpansiveSalePrice();
+    }
 
+    private void getExpansiveSalePrice() {
         expansiveSalePrice = Collections.max(totalItemsPricePerSale.values());
     }
 

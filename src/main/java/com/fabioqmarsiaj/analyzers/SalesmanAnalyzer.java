@@ -32,7 +32,7 @@ public class SalesmanAnalyzer implements Analyzer {
             throw new DataFileEmptyException();
         }else{
             salesmanQuantity(data);
-            worseSalesman(data);
+            worseSalesman();
         }
     }
 
@@ -40,8 +40,8 @@ public class SalesmanAnalyzer implements Analyzer {
         setSalesmanQuantity(String.valueOf(data.stream().filter(salesman -> salesman.contains("001ç")).count()));
     }
 
-    private void worseSalesman(Set<String> data) {
-        addToSalesmanSalesAmount(data);
+    private void worseSalesman() {
+        addToSalesmanSalesAmount();
 
         double worseSalesAmount = Collections.min(salesmansSalesAmount.values());
 
@@ -52,11 +52,8 @@ public class SalesmanAnalyzer implements Analyzer {
         });
     }
 
-    public void addToSalesmanSalesAmount(Set<String> data){
+    public void addToSalesmanSalesAmount(){
         salesmansSalesAmount.clear();
-
-        salesAnalyzer.addToSales(data);
-        addToSalesman(data);
 
         salesAnalyzer.getSales().forEach(sale -> salesmens.forEach(salesman -> {
             if(salesman.getName().equals(sale.getSalesmanName())){
@@ -86,7 +83,6 @@ public class SalesmanAnalyzer implements Analyzer {
                 amount[0] += amountPerSalesman;
             }
         });
-
         return amount[0];
     }
 }

@@ -19,7 +19,6 @@ public class DataInService {
     private SalesAnalyzer salesAnalyzer = SalesAnalyzer.getSingleton();
     private String delimiter;
     private String homepath;
-    private boolean fileExists;
     
     private DataInService() {
     }
@@ -29,7 +28,6 @@ public class DataInService {
     public Set<String> getDataList() { return dataList; }
     public String getDelimiter() { return delimiter; }
     public String getHomepath() { return homepath; }
-    public boolean isFileExists() { return fileExists; }
 
     public static DataInService getSingleton(){ return StaticHolder.INSTANCE; }
 
@@ -41,6 +39,7 @@ public class DataInService {
 
         createDirectoriesIfDoesntExist(dir);
         inFileCreator(dir.toString());
+
 
         for (File file : Objects.requireNonNull(dir.listFiles())) {
             try(BufferedReader bufferedReader = new BufferedReader(
@@ -107,8 +106,6 @@ public class DataInService {
     }
 
     private void createDirectories(String homepath) throws IOException {
-        Path path = Paths.get(homepath + "/data");
-        Files.createDirectories(path);
         Path pathToIn = Paths.get(homepath + "/data/in");
         Path pathToOut = Paths.get(homepath + "/data/out");
         Files.createDirectories(pathToIn);
@@ -117,6 +114,6 @@ public class DataInService {
 
     private void inFileCreator(String dir) throws IOException {
         File inFile = new File(dir + "/data.dat");
-        fileExists = inFile.createNewFile();
+        inFile.createNewFile();
     }
 }

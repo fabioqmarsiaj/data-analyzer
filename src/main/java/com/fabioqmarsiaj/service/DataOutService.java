@@ -25,9 +25,14 @@ public class DataOutService {
         SalesAnalyzer salesAnalyzer = SalesAnalyzer.getSingleton();
 
         dataInService.readFile();
+
+        dataToLists(dataInService, salesmanAnalyzer, salesAnalyzer);
+
         salesmanAnalyzer.analyze(dataInService.getDataList());
-        customerAnalyzer.analyze(dataInService.getDataList());
         salesAnalyzer.analyze(dataInService.getDataList());
+        customerAnalyzer.analyze(dataInService.getDataList());
+
+
 
         try(FileWriter fileWriter = new FileWriter(dataInService.getHomepath() + "/data/out/data.done.dat")){
             fileWriter.write(DataRequirements.CUSTOMERS.toString() + ": " + customerAnalyzer.getCustomerQuantity() + "\n" +
@@ -36,4 +41,10 @@ public class DataOutService {
                     DataRequirements.WORSE_SALESMAN.toString() + ": " + salesmanAnalyzer.getWorseSalesman());
         }
     }
+
+    private void dataToLists(DataInService dataInService, SalesmanAnalyzer salesmanAnalyzer, SalesAnalyzer salesAnalyzer) {
+        salesAnalyzer.addToSales(dataInService.getDataList());
+        salesmanAnalyzer.addToSalesman(dataInService.getDataList());
+    }
+
 }

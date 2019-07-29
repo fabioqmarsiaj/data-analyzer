@@ -6,7 +6,6 @@ import java.nio.file.*;
 public class WatcherService {
 
     public void fileWatcher() throws IOException, InterruptedException {
-
         DataOutService dataOutService = DataOutService.getSingleton();
         dataOutService.writeOutFile();
 
