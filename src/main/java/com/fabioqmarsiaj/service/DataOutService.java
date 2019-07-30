@@ -35,8 +35,6 @@ public class DataOutService {
         salesAnalyzer.analyze(dataInService.getDataList());
         customerAnalyzer.analyze(dataInService.getDataList());
 
-
-
         try(FileWriter fileWriter = new FileWriter(dataInService.getHomepath() + "/data/out/data.done.dat")){
             fileWriter.write(DataRequirements.CUSTOMERS.toString() + ": " + customerAnalyzer.getCustomerQuantity() + "\n" +
                     DataRequirements.SALESMEN.toString() + ": " + salesmanAnalyzer.getSalesmanQuantity() + "\n" +

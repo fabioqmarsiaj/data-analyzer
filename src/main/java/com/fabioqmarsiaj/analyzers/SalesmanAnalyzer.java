@@ -1,8 +1,11 @@
 package com.fabioqmarsiaj.analyzers;
 
 import com.fabioqmarsiaj.DataFileEmptyException;
+import com.fabioqmarsiaj.DataRequirements;
 import com.fabioqmarsiaj.domain.Salesman;
 import com.fabioqmarsiaj.service.DataInService;
+
+import java.io.*;
 import java.util.*;
 
 public class SalesmanAnalyzer implements Analyzer {
@@ -36,11 +39,11 @@ public class SalesmanAnalyzer implements Analyzer {
         }
     }
 
-    private void salesmanQuantity(Set<String> data) {
+    public void salesmanQuantity(Set<String> data) {
         setSalesmanQuantity(String.valueOf(data.stream().filter(salesman -> salesman.contains("001ç")).count()));
     }
 
-    private void worseSalesman() {
+    public void worseSalesman() {
         salesmansSalesAmount.clear();
 
         addToSalesmanSalesAmount();
