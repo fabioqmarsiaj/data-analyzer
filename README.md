@@ -111,6 +111,10 @@ $git clone https://github.com/fabioqmarsiaj/ilegra-challenge
     $gradle build
     $gradle run
    ```
+
+   - PS: By default, the application creates the directories for you and an empty flat file inside %HOMEPATH%/data/in called data.dat.
+   If you don't add any files before you run the application, it will crash with an exception called "DataFileEmptyException".
+   Just go there and add the datas, or a whole new file.
    
    ## Author
    
@@ -118,6 +122,6 @@ $git clone https://github.com/fabioqmarsiaj/ilegra-challenge
    
    <a href="https://github.com/fabioqmarsiaj">
      <img 
-     alt="Imagem da Autora Bárbara Becker" src="https://avatars0.githubusercontent.com/u/34289167?s=460&v=4" width="100">
+     alt="Imagem do Autor Fabio Marsiaj" src="https://avatars0.githubusercontent.com/u/34289167?s=460&v=4" width="100">
    </a>
   
