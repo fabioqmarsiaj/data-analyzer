@@ -24,6 +24,9 @@ public class DataOutService {
         CustomerAnalyzer customerAnalyzer = CustomerAnalyzer.getSingleton();
         SalesAnalyzer salesAnalyzer = SalesAnalyzer.getSingleton();
 
+        dataInService.getDataList().clear();
+        salesAnalyzer.getSales().clear();
+
         dataInService.readFile();
 
         dataToLists(dataInService, salesmanAnalyzer, salesAnalyzer);

@@ -41,6 +41,8 @@ public class SalesmanAnalyzer implements Analyzer {
     }
 
     private void worseSalesman() {
+        salesmansSalesAmount.clear();
+
         addToSalesmanSalesAmount();
 
         double worseSalesAmount = Collections.min(salesmansSalesAmount.values());
@@ -53,12 +55,14 @@ public class SalesmanAnalyzer implements Analyzer {
     }
 
     public void addToSalesmanSalesAmount(){
-        salesmansSalesAmount.clear();
 
-        salesAnalyzer.getSales().forEach(sale -> salesmens.forEach(salesman -> {
+        salesAnalyzer.getSales().forEach(sale -> getSalesmens().forEach(salesman -> {
             if(salesman.getName().equals(sale.getSalesmanName())){
-                double amount = getAmountPerSalesman(salesman.getName());
-                sale.getItems().forEach(item -> salesmansSalesAmount.put(salesman,amount));
+                sale.getItems().forEach(item -> {
+                    double amount = getAmountPerSalesman(salesman.getName());
+                    amount = amount + (item.getQuantity() * item.getPrice());
+                    salesmansSalesAmount.put(salesman,amount);
+                });
             }
         }));
     }

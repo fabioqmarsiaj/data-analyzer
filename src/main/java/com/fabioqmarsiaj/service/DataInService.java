@@ -6,7 +6,6 @@ import com.fabioqmarsiaj.domain.Item;
 import com.fabioqmarsiaj.domain.Sale;
 import com.fabioqmarsiaj.domain.Salesman;
 import org.apache.commons.lang3.StringUtils;
-
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;

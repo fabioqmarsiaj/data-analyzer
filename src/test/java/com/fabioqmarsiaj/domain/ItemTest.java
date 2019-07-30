@@ -9,10 +9,10 @@ public class ItemTest {
 
     @Test
     public void shouldCreateAnItem(){
-        Item item = new Item(2, 3, 20.0);
+        Item item = new Item("2", 3, 20.0);
 
         assertNotNull(item);
-        assertEquals(2, item.getId());
+        assertEquals("2", item.getId());
         assertEquals(3, item.getQuantity());
         assertEquals(new Double(20), item.getPrice());
     }
